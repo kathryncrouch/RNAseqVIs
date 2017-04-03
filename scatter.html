@@ -1,0 +1,22 @@
+<html>
+    <head>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.7.3/d3.js"></script>
+        <script src="https://d3js.org/d3-selection-multi.v1.min.js"></script>
+        <script src="https://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css"></script>
+        <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" src="/table.js"></script>
+        <script type="text/javascript" src="/slider.js"></script>
+        <script type="text/javascript" src="/scatter.js"></script>
+        <link rel="stylesheet" type="text/css" href="/table.css">
+    </head>
+
+    <body>
+        
+        <div class="d3">
+<!--            <p>Test</p> -->
+        </div>
+
+        <script>scatter.render(".d3", {"width":1000, "height":1000}, "cuffdiff24hr/gene_exp.diff")</script>
+    </body>
+</html>
