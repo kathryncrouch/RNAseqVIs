@@ -51,7 +51,7 @@ var scatter = (function() {
         return nodeGroup;
     }
 
-    var slide = function(v, slider, nodeGroup) {
+    var slide = function(v, slider, nodeGroup, table) {
         slider.handle.attr("cx", slider.sliderScale(v));
         slider.filterValue = v;
         var points = nodeGroup.select(".point");
@@ -61,6 +61,9 @@ var scatter = (function() {
         points.classed("selected", function(d) {
             return (d[slider.filterName] <= slider.filterValue) ? true : false;
         });
+        var selected = nodeGroup.select(".point.selected").data();
+        console.log(selected);
+        table.updateTable(selected);
     }
 
 
@@ -110,19 +113,23 @@ var scatter = (function() {
                     .style("font-family", "sans-serif");
 
                 var nodeGroup = makeNodeGroup(data, svg, xScale, yScale);
+
+                draw(data, nodeGroup);
                 
+                //var selected = nodeGroup.select(".point .selected").data();
+                var table = new Table(placement, nodeGroup.select(".point.selected").data());
+                //table.updateTable(data);
 
                 var qValueSlider = new Slider(svg, 0, 0.1, 0.05, [margin.left, options.width - margin.left - margin.right], options.height-100, "q_value");
-                console.log(qValueSlider);
                 //slider2 = new Slider(svg, 0, 0.1, 0.05, [margin.left, options.width - margin.left - margin.right], options.height -50, "p_value");
                
                 qValueSlider.slider.call(d3.drag()
                     .on("start.interrupt", function() {qValueSlider.slider.interrupt(); })
-                    .on("start drag", function() { slide(qValueSlider.sliderScale.invert(d3.event.x), qValueSlider, nodeGroup); }));
+                    .on("start drag", function() { slide(qValueSlider.sliderScale.invert(d3.event.x), qValueSlider, nodeGroup, table); }));
 
 
 
-                draw(data, nodeGroup);
+                //draw(data, nodeGroup);
 
                 nodeGroup.on("mouseover", function(d) {
                     d3.select(this).attr("transform", "translate(" + xScale(d.value_1) + "," + yScale(d.value_2) + ") scale(2)");
@@ -140,8 +147,8 @@ var scatter = (function() {
                     d3.select(this).select(".mouseover").remove();
                 });
 
-                var selected = nodeGroup.select(".point.selected").data();
-                var table = new Table(placement, selected);
+                /*var selected = nodeGroup.select(".point.selected").data();
+                var table = new Table(placement, selected);*/
             
            });
         }

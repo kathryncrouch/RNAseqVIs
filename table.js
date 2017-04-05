@@ -1,53 +1,67 @@
 function Table (placement, data) {
-    this.data = data;
-    console.log(this.data);
+//    this.updateTable(data);
+    //this.data = data;
+
+    //this.update = function(data) {
+    //}
+        
 
     var columns = [
-        {head: 'Gene Id', cl: 'gene_id',
+        {head: 'Gene Id', cl: 'text',
         html: function(row) {return row.gene_id} },
-        {head: 'Locus', cl: 'locus',
+        {head: 'Locus', cl: 'text',
         html: function(row) {return row.locus} },
-        {head: 'Tet -', cl: 'value_1',
+        {head: 'Tet -', cl: 'numeric',
         html: function(row) {return row.value_1} },
-        {head: 'Tet +', cl: 'value_2',
+        {head: 'Tet +', cl: 'numeric',
         html: function(row) {return row.value_2} },
-        {head: 'Log2(fold change)', cl: 'log2(fold_change)',
+        {head: 'Log2(fold change)', cl: 'numeric',
         html: function(row) {return row['log2(fold_change)']} },
-        {head: 'P value', cl: 'p_value',
+        {head: 'P value', cl: 'numeric',
         html: function(row) {return row.p_value} },
-        {head: 'Q value (adj)', cl: 'q_value',
+        {head: 'Q value (adj)', cl: 'numeric',
         html: function(row) {return row.q_value} }
     ]
 
-    var table = d3.select(placement).append('table');
+    this.table = d3.select(placement).append('table');
 
-    table.append('thead').append('tr')
+    this.table.append('thead').append('tr')
         .selectAll('th')
         .data(columns).enter()
         .append('th')
-        .attr('class', function(d) { return d.cl })
+        .attr('class', 'title')
         .text(function(d) {return d.head});
 
-    table.append('tbody')
-        .selectAll('tr')
-        .data(this.data).enter()
-        .append('tr')
-        .selectAll('td')
-        .data(function(row, i) {
-            return columns.map(function(c) {
-                var cell = {};
-                d3.keys(c).forEach(function(k) {
-                    cell[k] = typeof c[k] == 'function' ? c[k](row, i) : c[k];
-                });
-                return cell;
-            });
-        }).enter()
-        .append('td')
-        .html (function(d) { return d.html })
-        .attr('class', function(d) { return d.cl });
+    this.tableBody = this.table.append('tbody');
 
-    $(document).ready(function() {
-        table = $('table').DataTable();
-    });
-console.log(columns);
+    this.updateTable = function(data) {
+        //this.table.append('tbody')
+            var row = this.tableBody.selectAll('tr')
+            .data(data).enter()
+            .append('tr');
+            row.exit().remove();
+
+            var cell = row.selectAll('td')
+            .data(function(row, i) {
+                return columns.map(function(c) {
+                    var cell = {};
+                    d3.keys(c).forEach(function(k) {
+                        cell[k] = typeof c[k] == 'function' ? c[k](row, i) : c[k];
+                    });
+                    return cell;
+                });
+            }).enter()
+            .append('td')
+            .html (function(d) { return d.html })
+            .attr('class', function(d) { return d.cl });
+            cell.exit().remove()
+            this.table = $('table').DataTable();
+    }
+
+    this.updateTable(data);
+
+   /* $(document).ready(function() {
+        this.table = $('table').DataTable();
+    }); */
+
 }
